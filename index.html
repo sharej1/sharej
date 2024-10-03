@@ -68,13 +68,6 @@
         button:hover {
             background-color: #0056b3;
         }
-        input[type="text"], input[type="password"], input[type="number"], select {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            margin-bottom: 10px;
-            width: 200px;
-        }
     </style>
 </head>
 <body>
@@ -104,60 +97,73 @@
         <div class="category" onclick="showSection('vouchers')">Vouchers</div>
     </div>
 
-    <!-- Section placeholders -->
-    <div id="prepaid" class="section" style="display: none;"> <!-- Content --> </div>
-    <div id="credit" class="section" style="display: none;"> <!-- Content --> </div>
-    <div id="validity" class="section" style="display: none;"> <!-- Content --> </div>
-    <div id="internet" class="section" style="display: none;"> <!-- Content --> </div>
-    <div id="bills" class="section" style="display: none;"> <!-- Content --> </div>
-    <div id="vouchers" class="section" style="display: none;"> <!-- Content --> </div>
-
     <script>
-        // Hardcoded users data
         const users = [
             { username: 'admin', password: '12345', walletBalance: 1000000 },
-            { username: 'user1', password: '12345', walletBalance: 500000 }
+            { username: 'user1', password: '12345', walletBalance: 500000 },
         ];
 
-        // Login function
         function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            // Find the user from hardcoded users array
             const user = users.find(u => u.username === username && u.password === password);
             
             if (user) {
-                // If user found, show wallet and balance
-                document.getElementById('wallet-balance').innerText = user.walletBalance;
-                document.getElementById('login').style.display = 'none'; // Hide login form
-                document.getElementById('wallet').style.display = 'block'; // Show wallet
-                document.getElementById('mainMenu').style.display = 'flex'; // Show main menu
+                document.getElementById('wallet-balance').innerText = user.walletBalance.toFixed(2);
+                showWallet();
             } else {
-                alert('Invalid username or password. Please try again.');
+                alert('Login failed: Invalid credentials. Please check your username and password.');
             }
         }
 
-        // Show the selected section
+        function showWallet() {
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('wallet').style.display = 'block';
+            document.getElementById('mainMenu').style.display = 'flex'; 
+        }
+
         function showSection(sectionId) {
-            hideAllSections(); // Hide other sections
-            document.getElementById(sectionId).style.display = 'block';
+            hideAllSections();
+            // Show section dynamically, add relevant content for each section as needed
+            document.getElementById(sectionId).style.display = 'block'; 
             document.getElementById('backButton').style.display = 'block';
         }
 
-        // Hide all sections
         function hideAllSections() {
             const sections = document.querySelectorAll('.section');
             sections.forEach(section => section.style.display = 'none');
         }
 
-        // Show main menu
         function showMainMenu() {
-            hideAllSections(); // Hide other sections
+            hideAllSections();
             document.getElementById('mainMenu').style.display = 'flex';
             document.getElementById('backButton').style.display = 'none';
         }
 
+        function sendWhatsApp(message, amount, number) {
+            if (!number) {
+                alert('Please enter a mobile number');
+                return;
+            }
+            const fullMessage = `*Recharge Request*\n\nAmount: ${amount} LBP\nNumber: ${number}\nMessage: ${message}`;
+            alert('Recharge request sent to WhatsApp: ' + fullMessage);
+        }
+
+        function sendWhatsApp1(selectId, mobileId, message) {
+            const amount = document.getElementById(selectId).value;
+            const number = document.getElementById(mobileId).value;
+            sendWhatsApp(message, amount, number);
+        }
+
+        function calculateAndSend(message, amount, number) {
+            if (!number || !amount) {
+                alert('Please enter a valid mobile number and credit amount');
+                return;
+            }
+            const fullMessage = `*Recharge Request*\n\nAmount: ${amount} USD\nNumber: ${number}\nMessage: ${message}`;
+            alert('Recharge request sent to WhatsApp: ' + fullMessage);
+        }
     </script>
 
 </body>
