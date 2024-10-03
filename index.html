@@ -83,6 +83,22 @@
 
     <h1>Sharej</h1>
 
+<div id="login">
+        <h2>Login</h2>
+        <input type="text" placeholder="Username" id="username" required>
+        <input type="password" placeholder="Password" id="password" required>
+        <button onclick="login()">Login</button>
+    </div>
+
+    <div id="wallet" style="display: none;">
+        <h2>Your Wallet</h2>
+        <div>Balance: <span id="wallet-balance">0.00</span> LBP</div>
+        <input type="text" placeholder="Transfer Amount" id="transfer-amount">
+        <input type="text" placeholder="Recipient Username" id="recipient-username">
+        <button onclick="transferFunds()">Transfer</button>
+    </div>
+
+
     <div class="back-button" id="backButton" onclick="showMainMenu()">←</div>
 
     <div class="category-container" id="mainMenu">
@@ -226,6 +242,56 @@
     </div>
 
     <script>
+
+async function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('user', JSON.stringify(data.user));
+        document.getElementById('wallet-balance').innerText = data.walletBalance;
+        showWallet();
+    } else {
+        alert('Login failed');
+    }
+}
+
+async function transferFunds() {
+    const amount = document.getElementById('transfer-amount').value;
+    const recipient = document.getElementById('recipient-username').value;
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    const response = await fetch('/transfer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount, recipient, userId: user.id }),
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        document.getElementById('wallet-balance').innerText = data.newBalance;
+        alert('Transfer successful');
+    } else {
+        alert('Transfer failed');
+    }
+}
+
+function showWallet() {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('wallet').style.display = 'block';
+}
+
         function showSection(sectionId) {
             const sections = document.querySelectorAll('.section');
             sections.forEach(section => {
