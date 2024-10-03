@@ -68,6 +68,10 @@
         button:hover {
             background-color: #0056b3;
         }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -79,6 +83,7 @@
         <input type="text" placeholder="Username" id="username" required>
         <input type="password" placeholder="Password" id="password" required>
         <button onclick="login()">Login</button>
+        <p id="login-error" class="error"></p>
     </div>
 
     <div id="wallet" style="display: none;">
@@ -181,39 +186,42 @@
 
     <div id="internet" class="section" style="display: none;">
         <h2>Internet Options</h2>
-        <h3>Alfa</h3>
         <div class="item">
-            <label for="internet-alfa">Select Internet Package:</label>
-            <select id="internet-alfa">
-                <option value="20000">1GB - 20.000 LBP</option>
-                <option value="50000">3GB - 50.000 LBP</option>
+            <label for="internet-package">Select Package:</label>
+            <select id="internet-package">
+                <option value="225000">1 GB - 225.000 LBP</option>
+                <option value="450000">5 GB - 450.000 LBP</option>
+                <option value="675000">10 GB - 675.000 LBP</option>
+                <option value="900000">20 GB - 900.000 LBP</option>
             </select>
-            <input type="text" placeholder="Mobile Number" id="mobile-internet-alfa" required>
-            <button onclick="sendWhatsApp1('internet-alfa', 'mobile-internet-alfa', 'Internet Alfa')">Recharge</button>
-        </div>
-        <h3>Touch</h3>
-        <div class="item">
-            <label for="internet-touch">Select Internet Package:</label>
-            <select id="internet-touch">
-                <option value="20000">1GB - 20.000 LBP</option>
-                <option value="50000">3GB - 50.000 LBP</option>
-            </select>
-            <input type="text" placeholder="Mobile Number" id="mobile-internet-touch" required>
-            <button onclick="sendWhatsApp1('internet-touch', 'mobile-internet-touch', 'Internet Touch')">Recharge</button>
+            <input type="text" placeholder="Mobile Number" id="mobile-internet" required>
+            <button onclick="sendWhatsApp1('internet-package', 'mobile-internet', 'Internet')">Recharge</button>
         </div>
     </div>
 
     <div id="bills" class="section" style="display: none;">
-        <h2>Bills Options</h2>
-        <h3>Electricity</h3>
-        <input type="text" placeholder="Bill Number" id="bill-electricity">
-        <button onclick="sendWhatsApp('Electricity Bill', 0, document.getElementById('bill-electricity').value)">Pay Bill</button>
+        <h2>Pay Bills</h2>
+        <div class="item">
+            <input type="text" placeholder="Mobile Number" id="mobile-bill" required>
+            <input type="number" placeholder="Bill Amount (LBP)" id="bill-amount" required>
+            <button onclick="sendWhatsAppBill('Bill Payment', document.getElementById('bill-amount').value, document.getElementById('mobile-bill').value)">Pay</button>
+        </div>
     </div>
 
     <div id="vouchers" class="section" style="display: none;">
-        <h2>Vouchers Options</h2>
-        <input type="text" placeholder="Voucher Code" id="voucher-code">
-        <button onclick="sendWhatsApp('Voucher', 0, document.getElementById('voucher-code').value)">Redeem Voucher</button>
+        <h2>Voucher Options</h2>
+        <div class="item">
+            <div>100.000 LBP Voucher</div>
+            <button onclick="sendWhatsAppVoucher('Voucher 100.000 LBP', 100000)">Buy</button>
+        </div>
+        <div class="item">
+            <div>250.000 LBP Voucher</div>
+            <button onclick="sendWhatsAppVoucher('Voucher 250.000 LBP', 250000)">Buy</button>
+        </div>
+        <div class="item">
+            <div>500.000 LBP Voucher</div>
+            <button onclick="sendWhatsAppVoucher('Voucher 500.000 LBP', 500000)">Buy</button>
+        </div>
     </div>
 
     <script>
@@ -223,77 +231,102 @@
         ];
 
         function login() {
-            const username = document.getElementById('username').value;
+            const username = document.getElementById('username').value.trim().toLowerCase();
             const password = document.getElementById('password').value;
 
-            console.log(`Attempting login with username: ${username} and password: ${password}`);
-            const user = users.find(u => u.username === username && u.password === password);
-            
+            const user = users.find(u => u.username.toLowerCase() === username && u.password === password);
+
             if (user) {
                 document.getElementById('wallet-balance').innerText = user.walletBalance;
                 showWallet();
+                clearError();
             } else {
-                alert('Login failed: Invalid credentials. Please check your username and password.');
+                showError('Invalid username or password. Please try again.');
             }
+
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
         }
 
         function showWallet() {
-            console.log("Showing wallet...");
             document.getElementById('login').style.display = 'none';
             document.getElementById('wallet').style.display = 'block';
-            document.getElementById('mainMenu').style.display = 'flex'; 
+            document.getElementById('mainMenu').style.display = 'flex';
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById('login-error');
+            errorElement.innerText = message;
+        }
+
+        function clearError() {
+            const errorElement = document.getElementById('login-error');
+            errorElement.innerText = '';
         }
 
         function showSection(sectionId) {
-            hideAllSections();
+            document.getElementById('mainMenu').style.display = 'none';
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
             document.getElementById(sectionId).style.display = 'block';
             document.getElementById('backButton').style.display = 'block';
         }
 
-        function hideAllSections() {
-            const sections = document.querySelectorAll('.section');
-            sections.forEach(section => section.style.display = 'none');
-        }
-
         function showSubcategory(subcategoryId) {
-            hideAllSections();
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
             document.getElementById(subcategoryId).style.display = 'block';
-            document.getElementById('backButton').style.display = 'block';
         }
 
         function showMainMenu() {
-            hideAllSections();
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
             document.getElementById('mainMenu').style.display = 'flex';
             document.getElementById('backButton').style.display = 'none';
         }
 
-        function sendWhatsApp(message, amount, number) {
-            if (!number) {
-                alert('Please enter a mobile number');
+        function sendWhatsApp(product, price, mobileNumber) {
+            const walletBalance = parseFloat(document.getElementById('wallet-balance').innerText);
+            if (walletBalance < price) {
+                alert('Insufficient balance to purchase ' + product);
                 return;
             }
-            const fullMessage = `*Recharge Request*\n\nAmount: ${amount} LBP\nNumber: ${number}\nMessage: ${message}`;
-            console.log(fullMessage); // Simulating sending to WhatsApp
-            alert('Recharge request sent to WhatsApp: ' + fullMessage);
+            const message = 'I would like to purchase ' + product + ' for mobile number ' + mobileNumber;
+            const url = 'https://wa.me/96170083255?text=' + encodeURIComponent(message);
+            window.open(url, '_blank');
         }
 
-        function sendWhatsApp1(selectId, mobileId, message) {
-            const amount = document.getElementById(selectId).value;
-            const number = document.getElementById(mobileId).value;
-
-            sendWhatsApp(message, amount, number);
+        function calculateAndSend(product, amount, mobileNumber) {
+            const exchangeRate = 110000;
+            const priceInLBP = amount * exchangeRate;
+            sendWhatsApp(product + ' ' + amount + ' USD', priceInLBP, mobileNumber);
         }
 
-        function calculateAndSend(message, amount, number) {
-            if (!number || !amount) {
-                alert('Please enter a valid mobile number and credit amount');
+        function sendWhatsApp1(packageId, mobileInputId, product) {
+            const price = document.getElementById(packageId).value;
+            const mobileNumber = document.getElementById(mobileInputId).value;
+            sendWhatsApp(product, price, mobileNumber);
+        }
+
+        function sendWhatsAppBill(product, price, mobileNumber) {
+            const message = 'I would like to pay a bill of ' + price + ' LBP for mobile number ' + mobileNumber;
+            const url = 'https://wa.me/96170083255?text=' + encodeURIComponent(message);
+            window.open(url, '_blank');
+        }
+
+        function sendWhatsAppVoucher(product, price) {
+            const walletBalance = parseFloat(document.getElementById('wallet-balance').innerText);
+            if (walletBalance < price) {
+                alert('Insufficient balance to purchase ' + product);
                 return;
             }
-            const fullMessage = `*Recharge Request*\n\nAmount: ${amount} USD\nNumber: ${number}\nMessage: ${message}`;
-            console.log(fullMessage); // Simulating sending to WhatsApp
-            alert('Recharge request sent to WhatsApp: ' + fullMessage);
+            const message = 'I would like to purchase ' + product;
+            const url = 'https://wa.me/96170083255?text=' + encodeURIComponent(message);
+            window.open(url, '_blank');
         }
     </script>
-
 </body>
 </html>
