@@ -1,7 +1,6 @@
 const express = require('express');
 const fs = require('fs');
 const bodyParser = require('body-parser');
-const bcrypt = require('bcrypt');
 const cors = require('cors');
 const app = express();
 const usersFile = './users.json';
@@ -9,7 +8,6 @@ const usersFile = './users.json';
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('public')); // Serve static files from the public directory
-
 
 // Load users from file
 const loadUsers = () => {
@@ -31,10 +29,27 @@ app.post('/login', (req, res) => {
     const users = loadUsers();
     const user = users.find(u => u.username === username);
     
-    if (user && bcrypt.compareSync(password, user.password)) {
+    if (user && user.password === password) {  // Direct comparison
         return res.json({ user: { id: user.id, username: user.username }, walletBalance: user.walletBalance });
     }
     res.status(401).json({ message: 'Invalid credentials' });
+});
+
+// Register Endpoint
+app.post('/register', (req, res) => {
+    const { username, password } = req.body;
+    const users = loadUsers();
+    
+    // Check if user already exists
+    if (users.find(u => u.username === username)) {
+        return res.status(400).json({ message: 'User already exists' });
+    }
+    
+    // Create new user with plain text password
+    const newUser = { id: users.length + 1, username, password, walletBalance: 100 };
+    users.push(newUser);
+    saveUsers(users);
+    return res.status(201).json({ message: 'User created' });
 });
 
 // Transfer Funds Endpoint
