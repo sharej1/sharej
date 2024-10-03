@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharej</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .category-container, .section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .category, .subcategory {
+            margin: 10px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            color: inherit;
+        }
+        .category:hover, .subcategory:hover {
+            background-color: #e9ecef;
+        }
+        .back-container {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .back-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 2px 5px; /* Smaller padding */
+            font-size: 12px; /* Smaller font size */
+            cursor: pointer;
+            display: none; /* Initially hidden */
+            width: 40px; /* Set a fixed width */
+            height: 30px; /* Set a fixed height */
+            line-height: 30px; /* Center text vertically */
+        }
+        .item {
+            margin: 10px 0;
+            text-align: left;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Sharej</h1>
+
+    <div class="back-button" id="backButton" onclick="showMainMenu()">←</div>
+
+    <div class="category-container" id="mainMenu">
+        <div class="category" onclick="showSection('prepaid')">Prepaid</div>
+        <div class="category" onclick="showSection('credit')">Credit</div>
+        <div class="category" onclick="showSection('validity')">Validity</div>
+        <div class="category" onclick="showSection('internet')">Internet</div>
+        <div class="category" onclick="showSection('bills')">Bills</div>
+        <div class="category" onclick="showSection('vouchers')">Vouchers</div>
+    </div>
+
+    <div id="prepaid" class="section" style="display: none;">
+        <h2>Prepaid Options</h2>
+        <div class="category-container">
+            <div class="subcategory" onclick="showSubcategory('alfa')">ALFA</div>
+            <div class="subcategory" onclick="showSubcategory('touch')">TOUCH</div>
+        </div>
+    </div>
+
+    <div id="alfa" class="section" style="display: none;">
+        <div class="back-container">
+            <button class="back-button" onclick="showMainMenu()">←</button>
+        </div>
+        <h2>Alfa Prepaid Options</h2>
+        <div class="item">
+            <div>3.03$ + 15 days / 330.000 LBP</div>
+            <input type="text" placeholder="Mobile Number" id="mobile-prepaid-alfa1">
+            <button onclick="sendWhatsApp('Prepaid Alfa 3.03$', 330000, document.getElementById('mobile-prepaid-alfa1').value)">Recharge</button>
+        </div>
+        <div class="item">
+            <div>4.50$ + up to 30 days / 470.000 LBP</div>
+            <input type="text" placeholder="Mobile Number" id="mobile-prepaid-alfa2">
+            <button onclick="sendWhatsApp('Prepaid Alfa 4.50$', 470000, document.getElementById('mobile-prepaid-alfa2').value)">Recharge</button>
+        </div>
+    </div>
+
+    <div id="touch" class="section" style="display: none;">
+        <div class="back-container">
+            <button class="back-button" onclick="showMainMenu()">←</button>
+        </div>
+        <h2>Touch Prepaid Options</h2>
+        <div class="item">
+            <div>3.00$ + 15 days / 320.000 LBP</div>
+            <input type="text" placeholder="Mobile Number" id="mobile-prepaid-touch1">
+            <button onclick="sendWhatsApp('Prepaid Touch 3.00$', 320000, document.getElementById('mobile-prepaid-touch1').value)">Recharge</button>
+        </div>
+        <div class="item">
+            <div>4.50$ + up to 30 days / 450.000 LBP</div>
+            <input type="text" placeholder="Mobile Number" id="mobile-prepaid-touch2">
+            <button onclick="sendWhatsApp('Prepaid Touch 4.50$', 450000, document.getElementById('mobile-prepaid-touch2').value)">Recharge</button>
+        </div>
+    </div>
+
+    <div id="credit" class="section" style="display: none;">
+        <h2>Credit Options</h2>
+        <h3>Alfa</h3>
+        <div class="item">
+            <input type="number" placeholder="Credit Amount (USD)" id="credit-alfa-amount">
+            <input type="text" placeholder="Mobile Number" id="mobile-credit-alfa">
+            <button onclick="calculateAndSend('Credit Alfa', document.getElementById('credit-alfa-amount').value, document.getElementById('mobile-credit-alfa').value)">Recharge</button>
+        </div>
+        <h3>Touch</h3>
+        <div class="item">
+            <input type="number" placeholder="Credit Amount (USD)" id="credit-touch-amount">
+            <input type="text" placeholder="Mobile Number" id="mobile-credit-touch">
+            <button onclick="calculateAndSend('Credit Touch', document.getElementById('credit-touch-amount').value, document.getElementById('mobile-credit-touch').value)">Recharge</button>
+        </div>
+    </div>
+
+    <div id="validity" class="section" style="display: none;">
+        <h2>Validity Options</h2>
+        <h3>Alfa</h3>
+        <div class="item">
+            <label for="validity-alfa">Select Validity Period:</label>
+            <select id="validity-alfa">
+                <option value="225000">30 Days - 225.000 LBP</option>
+                <option value="450000">90 Days - 450.000 LBP</option>
+                <option value="675000">180 Days - 675.000 LBP</option>
+                <option value="900000">360 Days - 900.000 LBP</option>
+            </select>
+            <input type="text" placeholder="Mobile Number" id="mobile-validity-alfa" required>
+            <button onclick="sendWhatsApp1('validity-alfa', 'mobile-validity-alfa', 'Validity Alfa')">Recharge</button>
+        </div>
+        <h3>Touch</h3>
+        <div class="item">
+            <label for="validity-touch">Select Validity Period:</label>
+            <select id="validity-touch">
+                <option value="225000">30 Days - 225.000 LBP</option>
+                <option value="450000">90 Days - 450.000 LBP</option>
+                <option value="675000">180 Days - 675.000 LBP</option>
+                <option value="900000">360 Days - 900.000 LBP</option>
+            </select>
+            <input type="text" placeholder="Mobile Number" id="mobile-validity-touch" required>
+            <button onclick="sendWhatsApp1('validity-touch', 'mobile-validity-touch', 'Validity Touch')">Recharge</button>
+        </div>
+    </div>
+
+    <div id="internet" class="section" style="display: none;">
+        <h2>Internet Options</h2>
+        <h3>Alfa</h3>
+        <div class="item">
+            <div>500MB / 350.000 LBP</div>
+            <input type="text" placeholder="Mobile Number" id="mobile-internet-alfa1">
+            <button onclick="sendWhatsApp('Internet Alfa 500MB', 350000, document.getElementById('mobile-internet-alfa1').value)">Recharge</button>
+        </div>
+        <div class="item">
+            <div>1.5GB / 550.000 LBP</div>
+            <input type="text" placeholder="Mobile Number" id="mobile-internet-alfa2">
+            <button onclick="sendWhatsApp('Internet Alfa 1.5GB', 550000, document.getElementById('mobile-internet-alfa2').value)">Recharge</button>
+        </div>
+    </div>
+
+    <div id="bills" class="section" style="display: none;">
+        <h2>Bills Options</h2>
+        <h3>Alfa</h3>
+        <div class="item">
+            <input type="text" placeholder="Mobile Number" id="mobile-bills-alfa">
+            <button onclick="sendWhatsApp('Bills Alfa', 'N/A', document.getElementById('mobile-bills-alfa').value)">PAY</button>
+        </div>
+        <h3>Touch</h3>
+        <div class="item">
+            <input type="text" placeholder="Mobile Number" id="mobile-bills-touch">
+            <button onclick="sendWhatsApp('Bills Touch', 'N/A', document.getElementById('mobile-bills-touch').value)">PAY</button>
+        </div>
+    </div>
+
+    <div id="vouchers" class="section" style="display: none;">
+        <h2>Vouchers Options</h2>
+        <div class="item">
+            <div>5$ / 450.000 LBP</div>
+            <button onclick="sendWhatsApp('Voucher 5$', 450000, 'N/A')">GET VOUCHER</button>
+        </div>
+        <div class="item">
+            <div>10$ / 900.000 LBP</div>
+            <button onclick="sendWhatsApp('Voucher 10$', 900000, 'N/A')">GET VOUCHER</button>
+        </div>
+        <div class="item">
+            <div>50$ / 4.500.000 LBP</div>
+            <button onclick="sendWhatsApp('Voucher 50$', 4500000, 'N/A')">GET VOUCHER</button>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.display = section.id === sectionId ? 'block' : 'none';
+            });
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('backButton').style.display = 'block'; // Show back button
+        }
+
+        function showSubcategory(subcategoryId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.display = section.id === subcategoryId ? 'block' : 'none';
+            });
+            document.getElementById('backButton').style.display = 'block'; // Show back button
+        }
+
+        function showMainMenu() {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById('mainMenu').style.display = 'flex';
+            document.getElementById('backButton').style.display = 'none'; // Hide back button
+        }
+
+        function sendWhatsApp(item, price, mobile) {
+            const phoneNumber = '+96181445060';
+            const message = `Order: ${item}\nPrice: ${price} LBP\nMobile: ${mobile}`;
+            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+
+        function calculateAndSend(type, amount, mobile) {
+            const pricePerUnit = 110000; // LBP per 1 credit
+            const totalPrice = amount * pricePerUnit;
+            sendWhatsApp(`${type} ${amount} Credits`, totalPrice, mobile);
+        }
+
+        function sendWhatsApp1(selectId, mobileInputId, subcategoryName) {
+            const selectElement = document.getElementById(selectId);
+            const mobileNumber = document.getElementById(mobileInputId).value;
+
+            if (!mobileNumber) {
+                alert("Please enter a mobile number.");
+                return;
+            }
+
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            const order = selectedOption.text; // Get the text of the selected option
+            const price = selectedOption.value; // Get the value (price) of the selected option
+
+            const phoneNumber = '+96181445060';
+            const message = `Order: ${subcategoryName} - ${order}\nPrice: ${price} LBP\nMobile: ${mobileNumber}`;
+            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+    </script>
+
+</body>
+</html>
