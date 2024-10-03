@@ -26,11 +26,14 @@ const saveUsers = (users) => {
 // Login Endpoint
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
+    console.log({ username, password }); // Log the input
     const users = loadUsers();
+    console.log(users); // Log loaded users
+
     const user = users.find(u => u.username === username);
-    
-    if (user && user.password === password) {  // Direct comparison
-        return res.json({ user: { id: user.id, username: user.username }, walletBalance: user.walletBalance });
+
+    if (user && user.password === password) {
+        return res.json({ user: { id: Number(user.id), username: user.username }, walletBalance: user.walletBalance });
     }
     res.status(401).json({ message: 'Invalid credentials' });
 });
@@ -40,12 +43,10 @@ app.post('/register', (req, res) => {
     const { username, password } = req.body;
     const users = loadUsers();
     
-    // Check if user already exists
     if (users.find(u => u.username === username)) {
         return res.status(400).json({ message: 'User already exists' });
     }
-    
-    // Create new user with plain text password
+
     const newUser = { id: users.length + 1, username, password, walletBalance: 100 };
     users.push(newUser);
     saveUsers(users);
@@ -56,7 +57,7 @@ app.post('/register', (req, res) => {
 app.post('/transfer', (req, res) => {
     const { amount, recipient, userId } = req.body;
     const users = loadUsers();
-    const user = users.find(u => u.id === userId);
+    const user = users.find(u => Number(u.id) === userId);
     const recipientUser = users.find(u => u.username === recipient);
 
     if (!user) {
