@@ -241,34 +241,29 @@
     </div>
 
     <script>
-        <script>
-    const users = [
-        { username: 'admin', password: '12345', walletBalance: 1000000 },
-        { username: 'user1', password: '12345', walletBalance: 500000 },
-    ];
+        const users = [
+            { username: 'admin', password: '12345', walletBalance: 1000000 },
+            { username: 'user1', password: '12345', walletBalance: 500000 },
+        ];
 
-    function login() {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-        // Simulate login
-        const user = users.find(u => u.username === username && u.password === password);
-        
-        if (user) {
-            document.getElementById('wallet-balance').innerText = user.walletBalance;
-            showWallet();
-        } else {
-            alert('Login failed: Invalid credentials');
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                document.getElementById('wallet-balance').innerText = user.walletBalance;
+                showWallet();
+            } else {
+                alert('Login failed: Invalid credentials');
+            }
         }
-    }
 
-    function showWallet() {
-        document.getElementById('login').style.display = 'none';
-        document.getElementById('wallet').style.display = 'block';
-    }
-
-    // ... (rest of your existing JavaScript)
-</script>
+        function showWallet() {
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('wallet').style.display = 'block';
+        }
 
         function showSection(sectionId) {
             const sections = document.querySelectorAll('.section');
