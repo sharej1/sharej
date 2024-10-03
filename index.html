@@ -252,12 +252,31 @@
             document.getElementById('backButton').style.display = 'none'; // Hide back button
         }
 
-        function sendWhatsApp(item, price, mobile) {
-            const phoneNumber = '+96181445060';
-            const message = `Order: ${item}\nPrice: ${price} LBP\nMobile: ${mobile}`;
-            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            window.open(url, '_blank');
-        }
+       function sendWhatsApp(item, price, mobile) {
+    const phoneNumber = '+96181445060';
+    const message = `Order: ${item}\nPrice: ${price} LBP\nMobile: ${mobile}`;
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    
+    // Show loading indicator (this is a simple example)
+    const loadingIndicator = document.createElement('div');
+    loadingIndicator.textContent = 'Opening WhatsApp...';
+    loadingIndicator.style.position = 'fixed';
+    loadingIndicator.style.top = '50%';
+    loadingIndicator.style.left = '50%';
+    loadingIndicator.style.transform = 'translate(-50%, -50%)';
+    loadingIndicator.style.background = 'white';
+    loadingIndicator.style.padding = '10px';
+    loadingIndicator.style.borderRadius = '5px';
+    loadingIndicator.style.zIndex = '1000';
+    document.body.appendChild(loadingIndicator);
+    
+    // Open WhatsApp and remove loading indicator after a delay
+    setTimeout(() => {
+        window.open(url, '_blank');
+        document.body.removeChild(loadingIndicator);
+    }, 1000); // Simulate a brief delay
+}
+
 
         function calculateAndSend(type, amount, mobile) {
             const pricePerUnit = 110000; // LBP per 1 credit
