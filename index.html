@@ -83,7 +83,7 @@
 
     <h1>Sharej</h1>
 
-<div id="login">
+   <div id="login">
         <h2>Login</h2>
         <input type="text" placeholder="Username" id="username" required>
         <input type="password" placeholder="Password" id="password" required>
@@ -98,8 +98,7 @@
         <button onclick="transferFunds()">Transfer</button>
     </div>
 
-
-    <div class="back-button" id="backButton" onclick="showMainMenu()">←</div>
+    <div class="back-button" id="backButton" onclick="showMainMenu()" style="display: none;">←</div>
 
     <div class="category-container" id="mainMenu">
         <div class="category" onclick="showSection('prepaid')">Prepaid</div>
@@ -242,56 +241,37 @@
     </div>
 
     <script>
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-async function login() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+            console.log({ username, password }); // Log input values
 
-    const response = await fetch('/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-    });
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            });
 
-    if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('user', JSON.stringify(data.user));
-        document.getElementById('wallet-balance').innerText = data.walletBalance;
-        showWallet();
-    } else {
-        alert('Login failed');
-    }
-}
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data); // Log response data
+                localStorage.setItem('user', JSON.stringify(data.user));
+                document.getElementById('wallet-balance').innerText = data.walletBalance;
+                showWallet();
+            } else {
+                const errorData = await response.json();
+                console.log(errorData); // Log any error message
+                alert('Login failed: ' + errorData.message);
+            }
+        }
 
-async function transferFunds() {
-    const amount = document.getElementById('transfer-amount').value;
-    const recipient = document.getElementById('recipient-username').value;
-    const user = JSON.parse(localStorage.getItem('user'));
-
-    const response = await fetch('/transfer', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ amount, recipient, userId: user.id }),
-    });
-
-    if (response.ok) {
-        const data = await response.json();
-        document.getElementById('wallet-balance').innerText = data.newBalance;
-        alert('Transfer successful');
-    } else {
-        alert('Transfer failed');
-    }
-}
-
-function showWallet() {
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('wallet').style.display = 'block';
-}
-
+        function showWallet() {
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('wallet').style.display = 'block';
+        }
         function showSection(sectionId) {
             const sections = document.querySelectorAll('.section');
             sections.forEach(section => {
