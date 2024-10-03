@@ -241,31 +241,35 @@
     </div>
 
     <script>
-        // Sample users (for demo purposes only)
-        const users = [
-            { username: "user1", password: "pass1", walletBalance: 1000000 },
-            { username: "user2", password: "pass2", walletBalance: 500000 },
-        ];
+        <script>
+    const users = [
+        { username: 'admin', password: '12345', walletBalance: 1000000 },
+        { username: 'user1', password: '12345', walletBalance: 500000 },
+    ];
 
-        function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+    function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
 
-            const user = users.find(u => u.username === username && u.password === password);
-
-            if (user) {
-                localStorage.setItem('user', JSON.stringify(user));
-                document.getElementById('wallet-balance').innerText = user.walletBalance;
-                showWallet();
-            } else {
-                alert('Login failed: Invalid username or password');
-            }
+        // Simulate login
+        const user = users.find(u => u.username === username && u.password === password);
+        
+        if (user) {
+            document.getElementById('wallet-balance').innerText = user.walletBalance;
+            showWallet();
+        } else {
+            alert('Login failed: Invalid credentials');
         }
+    }
 
-        function showWallet() {
-            document.getElementById('login').style.display = 'none';
-            document.getElementById('wallet').style.display = 'block';
-        }
+    function showWallet() {
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('wallet').style.display = 'block';
+    }
+
+    // ... (rest of your existing JavaScript)
+</script>
+
         function showSection(sectionId) {
             const sections = document.querySelectorAll('.section');
             sections.forEach(section => {
