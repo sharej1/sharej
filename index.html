@@ -68,9 +68,12 @@
         button:hover {
             background-color: #0056b3;
         }
-        .error {
-            color: red;
-            margin-top: 10px;
+        input[type="text"], input[type="password"], input[type="number"], select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            width: 200px;
         }
     </style>
 </head>
@@ -83,7 +86,6 @@
         <input type="text" placeholder="Username" id="username" required>
         <input type="password" placeholder="Password" id="password" required>
         <button onclick="login()">Login</button>
-        <p id="login-error" class="error"></p>
     </div>
 
     <div id="wallet" style="display: none;">
@@ -93,7 +95,7 @@
 
     <div class="back-button" id="backButton" onclick="showMainMenu()">← Back</div>
 
-    <div class="category-container" id="mainMenu">
+    <div class="category-container" id="mainMenu" style="display: none;">
         <div class="category" onclick="showSection('prepaid')">Prepaid</div>
         <div class="category" onclick="showSection('credit')">Credit</div>
         <div class="category" onclick="showSection('validity')">Validity</div>
@@ -102,231 +104,61 @@
         <div class="category" onclick="showSection('vouchers')">Vouchers</div>
     </div>
 
-    <div id="prepaid" class="section" style="display: none;">
-        <h2>Prepaid Options</h2>
-        <div class="category-container">
-            <div class="subcategory" onclick="showSubcategory('alfa')">ALFA</div>
-            <div class="subcategory" onclick="showSubcategory('touch')">TOUCH</div>
-        </div>
-    </div>
-
-    <div id="alfa" class="section" style="display: none;">
-        <div class="back-button" onclick="showSection('prepaid')">← Back</div>
-        <h2>Alfa Prepaid Options</h2>
-        <div class="item">
-            <div>3.03$ + 15 days / 330.000 LBP</div>
-            <input type="text" placeholder="Mobile Number" id="mobile-prepaid-alfa1">
-            <button onclick="sendWhatsApp('Prepaid Alfa 3.03$', 330000, document.getElementById('mobile-prepaid-alfa1').value)">Recharge</button>
-        </div>
-        <div class="item">
-            <div>4.50$ + up to 30 days / 470.000 LBP</div>
-            <input type="text" placeholder="Mobile Number" id="mobile-prepaid-alfa2">
-            <button onclick="sendWhatsApp('Prepaid Alfa 4.50$', 470000, document.getElementById('mobile-prepaid-alfa2').value)">Recharge</button>
-        </div>
-    </div>
-
-    <div id="touch" class="section" style="display: none;">
-        <div class="back-button" onclick="showSection('prepaid')">← Back</div>
-        <h2>Touch Prepaid Options</h2>
-        <div class="item">
-            <div>3.00$ + 15 days / 320.000 LBP</div>
-            <input type="text" placeholder="Mobile Number" id="mobile-prepaid-touch1">
-            <button onclick="sendWhatsApp('Prepaid Touch 3.00$', 320000, document.getElementById('mobile-prepaid-touch1').value)">Recharge</button>
-        </div>
-        <div class="item">
-            <div>4.50$ + up to 30 days / 450.000 LBP</div>
-            <input type="text" placeholder="Mobile Number" id="mobile-prepaid-touch2">
-            <button onclick="sendWhatsApp('Prepaid Touch 4.50$', 450000, document.getElementById('mobile-prepaid-touch2').value)">Recharge</button>
-        </div>
-    </div>
-
-    <div id="credit" class="section" style="display: none;">
-        <h2>Credit Options</h2>
-        <h3>Alfa</h3>
-        <div class="item">
-            <input type="number" placeholder="Credit Amount (USD)" id="credit-alfa-amount">
-            <input type="text" placeholder="Mobile Number" id="mobile-credit-alfa">
-            <button onclick="calculateAndSend('Credit Alfa', document.getElementById('credit-alfa-amount').value, document.getElementById('mobile-credit-alfa').value)">Recharge</button>
-        </div>
-        <h3>Touch</h3>
-        <div class="item">
-            <input type="number" placeholder="Credit Amount (USD)" id="credit-touch-amount">
-            <input type="text" placeholder="Mobile Number" id="mobile-credit-touch">
-            <button onclick="calculateAndSend('Credit Touch', document.getElementById('credit-touch-amount').value, document.getElementById('mobile-credit-touch').value)">Recharge</button>
-        </div>
-    </div>
-
-    <div id="validity" class="section" style="display: none;">
-        <h2>Validity Options</h2>
-        <h3>Alfa</h3>
-        <div class="item">
-            <label for="validity-alfa">Select Validity Period:</label>
-            <select id="validity-alfa">
-                <option value="225000">30 Days - 225.000 LBP</option>
-                <option value="450000">90 Days - 450.000 LBP</option>
-                <option value="675000">180 Days - 675.000 LBP</option>
-                <option value="900000">360 Days - 900.000 LBP</option>
-            </select>
-            <input type="text" placeholder="Mobile Number" id="mobile-validity-alfa" required>
-            <button onclick="sendWhatsApp1('validity-alfa', 'mobile-validity-alfa', 'Validity Alfa')">Recharge</button>
-        </div>
-        <h3>Touch</h3>
-        <div class="item">
-            <label for="validity-touch">Select Validity Period:</label>
-            <select id="validity-touch">
-                <option value="225000">30 Days - 225.000 LBP</option>
-                <option value="450000">90 Days - 450.000 LBP</option>
-                <option value="675000">180 Days - 675.000 LBP</option>
-                <option value="900000">360 Days - 900.000 LBP</option>
-            </select>
-            <input type="text" placeholder="Mobile Number" id="mobile-validity-touch" required>
-            <button onclick="sendWhatsApp1('validity-touch', 'mobile-validity-touch', 'Validity Touch')">Recharge</button>
-        </div>
-    </div>
-
-    <div id="internet" class="section" style="display: none;">
-        <h2>Internet Options</h2>
-        <div class="item">
-            <label for="internet-package">Select Package:</label>
-            <select id="internet-package">
-                <option value="225000">1 GB - 225.000 LBP</option>
-                <option value="450000">5 GB - 450.000 LBP</option>
-                <option value="675000">10 GB - 675.000 LBP</option>
-                <option value="900000">20 GB - 900.000 LBP</option>
-            </select>
-            <input type="text" placeholder="Mobile Number" id="mobile-internet" required>
-            <button onclick="sendWhatsApp1('internet-package', 'mobile-internet', 'Internet')">Recharge</button>
-        </div>
-    </div>
-
-    <div id="bills" class="section" style="display: none;">
-        <h2>Pay Bills</h2>
-        <div class="item">
-            <input type="text" placeholder="Mobile Number" id="mobile-bill" required>
-            <input type="number" placeholder="Bill Amount (LBP)" id="bill-amount" required>
-            <button onclick="sendWhatsAppBill('Bill Payment', document.getElementById('bill-amount').value, document.getElementById('mobile-bill').value)">Pay</button>
-        </div>
-    </div>
-
-    <div id="vouchers" class="section" style="display: none;">
-        <h2>Voucher Options</h2>
-        <div class="item">
-            <div>100.000 LBP Voucher</div>
-            <button onclick="sendWhatsAppVoucher('Voucher 100.000 LBP', 100000)">Buy</button>
-        </div>
-        <div class="item">
-            <div>250.000 LBP Voucher</div>
-            <button onclick="sendWhatsAppVoucher('Voucher 250.000 LBP', 250000)">Buy</button>
-        </div>
-        <div class="item">
-            <div>500.000 LBP Voucher</div>
-            <button onclick="sendWhatsAppVoucher('Voucher 500.000 LBP', 500000)">Buy</button>
-        </div>
-    </div>
+    <!-- Section placeholders -->
+    <div id="prepaid" class="section" style="display: none;"> <!-- Content --> </div>
+    <div id="credit" class="section" style="display: none;"> <!-- Content --> </div>
+    <div id="validity" class="section" style="display: none;"> <!-- Content --> </div>
+    <div id="internet" class="section" style="display: none;"> <!-- Content --> </div>
+    <div id="bills" class="section" style="display: none;"> <!-- Content --> </div>
+    <div id="vouchers" class="section" style="display: none;"> <!-- Content --> </div>
 
     <script>
+        // Hardcoded users data
         const users = [
             { username: 'admin', password: '12345', walletBalance: 1000000 },
-            { username: 'user1', password: '12345', walletBalance: 500000 },
+            { username: 'user1', password: '12345', walletBalance: 500000 }
         ];
 
+        // Login function
         function login() {
-            const username = document.getElementById('username').value.trim().toLowerCase();
+            const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            const user = users.find(u => u.username.toLowerCase() === username && u.password === password);
-
+            // Find the user from hardcoded users array
+            const user = users.find(u => u.username === username && u.password === password);
+            
             if (user) {
+                // If user found, show wallet and balance
                 document.getElementById('wallet-balance').innerText = user.walletBalance;
-                showWallet();
-                clearError();
+                document.getElementById('login').style.display = 'none'; // Hide login form
+                document.getElementById('wallet').style.display = 'block'; // Show wallet
+                document.getElementById('mainMenu').style.display = 'flex'; // Show main menu
             } else {
-                showError('Invalid username or password. Please try again.');
+                alert('Invalid username or password. Please try again.');
             }
-
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
         }
 
-        function showWallet() {
-            document.getElementById('login').style.display = 'none';
-            document.getElementById('wallet').style.display = 'block';
-            document.getElementById('mainMenu').style.display = 'flex';
-        }
-
-        function showError(message) {
-            const errorElement = document.getElementById('login-error');
-            errorElement.innerText = message;
-        }
-
-        function clearError() {
-            const errorElement = document.getElementById('login-error');
-            errorElement.innerText = '';
-        }
-
+        // Show the selected section
         function showSection(sectionId) {
-            document.getElementById('mainMenu').style.display = 'none';
-            document.querySelectorAll('.section').forEach(section => {
-                section.style.display = 'none';
-            });
+            hideAllSections(); // Hide other sections
             document.getElementById(sectionId).style.display = 'block';
             document.getElementById('backButton').style.display = 'block';
         }
 
-        function showSubcategory(subcategoryId) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.style.display = 'none';
-            });
-            document.getElementById(subcategoryId).style.display = 'block';
+        // Hide all sections
+        function hideAllSections() {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.style.display = 'none');
         }
 
+        // Show main menu
         function showMainMenu() {
-            document.querySelectorAll('.section').forEach(section => {
-                section.style.display = 'none';
-            });
+            hideAllSections(); // Hide other sections
             document.getElementById('mainMenu').style.display = 'flex';
             document.getElementById('backButton').style.display = 'none';
         }
 
-        function sendWhatsApp(product, price, mobileNumber) {
-            const walletBalance = parseFloat(document.getElementById('wallet-balance').innerText);
-            if (walletBalance < price) {
-                alert('Insufficient balance to purchase ' + product);
-                return;
-            }
-            const message = 'I would like to purchase ' + product + ' for mobile number ' + mobileNumber;
-            const url = 'https://wa.me/96170083255?text=' + encodeURIComponent(message);
-            window.open(url, '_blank');
-        }
-
-        function calculateAndSend(product, amount, mobileNumber) {
-            const exchangeRate = 110000;
-            const priceInLBP = amount * exchangeRate;
-            sendWhatsApp(product + ' ' + amount + ' USD', priceInLBP, mobileNumber);
-        }
-
-        function sendWhatsApp1(packageId, mobileInputId, product) {
-            const price = document.getElementById(packageId).value;
-            const mobileNumber = document.getElementById(mobileInputId).value;
-            sendWhatsApp(product, price, mobileNumber);
-        }
-
-        function sendWhatsAppBill(product, price, mobileNumber) {
-            const message = 'I would like to pay a bill of ' + price + ' LBP for mobile number ' + mobileNumber;
-            const url = 'https://wa.me/96170083255?text=' + encodeURIComponent(message);
-            window.open(url, '_blank');
-        }
-
-        function sendWhatsAppVoucher(product, price) {
-            const walletBalance = parseFloat(document.getElementById('wallet-balance').innerText);
-            if (walletBalance < price) {
-                alert('Insufficient balance to purchase ' + product);
-                return;
-            }
-            const message = 'I would like to purchase ' + product;
-            const url = 'https://wa.me/96170083255?text=' + encodeURIComponent(message);
-            window.open(url, '_blank');
-        }
     </script>
+
 </body>
 </html>
