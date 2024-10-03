@@ -54,13 +54,13 @@
             color: white;
             border: none;
             border-radius: 5px;
-            padding: 2px 5px; /* Smaller padding */
-            font-size: 12px; /* Smaller font size */
+            padding: 2px 5px;
+            font-size: 12px;
             cursor: pointer;
-            display: none; /* Initially hidden */
-            width: 40px; /* Set a fixed width */
-            height: 30px; /* Set a fixed height */
-            line-height: 30px; /* Center text vertically */
+            display: none;
+            width: 40px;
+            height: 30px;
+            line-height: 30px;
         }
         .item {
             margin: 10px 0;
@@ -241,30 +241,24 @@
     </div>
 
     <script>
-        async function login() {
+        // Sample users (for demo purposes only)
+        const users = [
+            { username: "user1", password: "pass1", walletBalance: 1000000 },
+            { username: "user2", password: "pass2", walletBalance: 500000 },
+        ];
+
+        function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            console.log({ username, password }); // Log input values
+            const user = users.find(u => u.username === username && u.password === password);
 
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log(data); // Log response data
-                localStorage.setItem('user', JSON.stringify(data.user));
-                document.getElementById('wallet-balance').innerText = data.walletBalance;
+            if (user) {
+                localStorage.setItem('user', JSON.stringify(user));
+                document.getElementById('wallet-balance').innerText = user.walletBalance;
                 showWallet();
             } else {
-                const errorData = await response.json();
-                console.log(errorData); // Log any error message
-                alert('Login failed: ' + errorData.message);
+                alert('Login failed: Invalid username or password');
             }
         }
 
@@ -278,7 +272,7 @@
                 section.style.display = section.id === sectionId ? 'block' : 'none';
             });
             document.getElementById('mainMenu').style.display = 'none';
-            document.getElementById('backButton').style.display = 'block'; // Show back button
+            document.getElementById('backButton').style.display = 'block';
         }
 
         function showSubcategory(subcategoryId) {
@@ -286,7 +280,7 @@
             sections.forEach(section => {
                 section.style.display = section.id === subcategoryId ? 'block' : 'none';
             });
-            document.getElementById('backButton').style.display = 'block'; // Show back button
+            document.getElementById('backButton').style.display = 'block';
         }
 
         function showMainMenu() {
@@ -295,34 +289,15 @@
                 section.style.display = 'none';
             });
             document.getElementById('mainMenu').style.display = 'flex';
-            document.getElementById('backButton').style.display = 'none'; // Hide back button
+            document.getElementById('backButton').style.display = 'none';
         }
 
-       function sendWhatsApp(item, price, mobile) {
-    const phoneNumber = '+96181445060';
-    const message = `Order: ${item}\nPrice: ${price} LBP\nMobile: ${mobile}`;
-    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    
-    // Show loading indicator (this is a simple example)
-    const loadingIndicator = document.createElement('div');
-    loadingIndicator.textContent = 'Opening WhatsApp...';
-    loadingIndicator.style.position = 'fixed';
-    loadingIndicator.style.top = '50%';
-    loadingIndicator.style.left = '50%';
-    loadingIndicator.style.transform = 'translate(-50%, -50%)';
-    loadingIndicator.style.background = 'white';
-    loadingIndicator.style.padding = '10px';
-    loadingIndicator.style.borderRadius = '5px';
-    loadingIndicator.style.zIndex = '1000';
-    document.body.appendChild(loadingIndicator);
-    
-    // Open WhatsApp and remove loading indicator after a delay
-    setTimeout(() => {
-        window.open(url, '_blank');
-        document.body.removeChild(loadingIndicator);
-    }, 1000); // Simulate a brief delay
-}
-
+        function sendWhatsApp(item, price, mobile) {
+            const phoneNumber = '+96181445060';
+            const message = `Order: ${item}\nPrice: ${price} LBP\nMobile: ${mobile}`;
+            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
 
         function calculateAndSend(type, amount, mobile) {
             const pricePerUnit = 110000; // LBP per 1 credit
@@ -340,8 +315,8 @@
             }
 
             const selectedOption = selectElement.options[selectElement.selectedIndex];
-            const order = selectedOption.text; // Get the text of the selected option
-            const price = selectedOption.value; // Get the value (price) of the selected option
+            const order = selectedOption.text;
+            const price = selectedOption.value;
 
             const phoneNumber = '+96181445060';
             const message = `Order: ${subcategoryName} - ${order}\nPrice: ${price} LBP\nMobile: ${mobileNumber}`;
