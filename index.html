@@ -88,7 +88,7 @@
 
     <div class="back-button" id="backButton" onclick="showMainMenu()">← Back</div>
 
-    <div class="category-container" id="mainMenu" style="display: none;">
+    <div class="category-container" id="mainMenu">
         <div class="category" onclick="showSection('prepaid')">Prepaid</div>
         <div class="category" onclick="showSection('credit')">Credit</div>
         <div class="category" onclick="showSection('validity')">Validity</div>
@@ -97,7 +97,6 @@
         <div class="category" onclick="showSection('vouchers')">Vouchers</div>
     </div>
 
-    <!-- Prepaid Section -->
     <div id="prepaid" class="section" style="display: none;">
         <h2>Prepaid Options</h2>
         <div class="category-container">
@@ -106,7 +105,6 @@
         </div>
     </div>
 
-    <!-- Alfa Subcategory -->
     <div id="alfa" class="section" style="display: none;">
         <div class="back-button" onclick="showSection('prepaid')">← Back</div>
         <h2>Alfa Prepaid Options</h2>
@@ -122,7 +120,6 @@
         </div>
     </div>
 
-    <!-- Touch Subcategory -->
     <div id="touch" class="section" style="display: none;">
         <div class="back-button" onclick="showSection('prepaid')">← Back</div>
         <h2>Touch Prepaid Options</h2>
@@ -138,8 +135,87 @@
         </div>
     </div>
 
-    <!-- Other sections omitted for brevity, but follow the same pattern -->
-    
+    <div id="credit" class="section" style="display: none;">
+        <h2>Credit Options</h2>
+        <h3>Alfa</h3>
+        <div class="item">
+            <input type="number" placeholder="Credit Amount (USD)" id="credit-alfa-amount">
+            <input type="text" placeholder="Mobile Number" id="mobile-credit-alfa">
+            <button onclick="calculateAndSend('Credit Alfa', document.getElementById('credit-alfa-amount').value, document.getElementById('mobile-credit-alfa').value)">Recharge</button>
+        </div>
+        <h3>Touch</h3>
+        <div class="item">
+            <input type="number" placeholder="Credit Amount (USD)" id="credit-touch-amount">
+            <input type="text" placeholder="Mobile Number" id="mobile-credit-touch">
+            <button onclick="calculateAndSend('Credit Touch', document.getElementById('credit-touch-amount').value, document.getElementById('mobile-credit-touch').value)">Recharge</button>
+        </div>
+    </div>
+
+    <div id="validity" class="section" style="display: none;">
+        <h2>Validity Options</h2>
+        <h3>Alfa</h3>
+        <div class="item">
+            <label for="validity-alfa">Select Validity Period:</label>
+            <select id="validity-alfa">
+                <option value="225000">30 Days - 225.000 LBP</option>
+                <option value="450000">90 Days - 450.000 LBP</option>
+                <option value="675000">180 Days - 675.000 LBP</option>
+                <option value="900000">360 Days - 900.000 LBP</option>
+            </select>
+            <input type="text" placeholder="Mobile Number" id="mobile-validity-alfa" required>
+            <button onclick="sendWhatsApp1('validity-alfa', 'mobile-validity-alfa', 'Validity Alfa')">Recharge</button>
+        </div>
+        <h3>Touch</h3>
+        <div class="item">
+            <label for="validity-touch">Select Validity Period:</label>
+            <select id="validity-touch">
+                <option value="225000">30 Days - 225.000 LBP</option>
+                <option value="450000">90 Days - 450.000 LBP</option>
+                <option value="675000">180 Days - 675.000 LBP</option>
+                <option value="900000">360 Days - 900.000 LBP</option>
+            </select>
+            <input type="text" placeholder="Mobile Number" id="mobile-validity-touch" required>
+            <button onclick="sendWhatsApp1('validity-touch', 'mobile-validity-touch', 'Validity Touch')">Recharge</button>
+        </div>
+    </div>
+
+    <div id="internet" class="section" style="display: none;">
+        <h2>Internet Options</h2>
+        <h3>Alfa</h3>
+        <div class="item">
+            <label for="internet-alfa">Select Internet Package:</label>
+            <select id="internet-alfa">
+                <option value="20000">1GB - 20.000 LBP</option>
+                <option value="50000">3GB - 50.000 LBP</option>
+            </select>
+            <input type="text" placeholder="Mobile Number" id="mobile-internet-alfa" required>
+            <button onclick="sendWhatsApp1('internet-alfa', 'mobile-internet-alfa', 'Internet Alfa')">Recharge</button>
+        </div>
+        <h3>Touch</h3>
+        <div class="item">
+            <label for="internet-touch">Select Internet Package:</label>
+            <select id="internet-touch">
+                <option value="20000">1GB - 20.000 LBP</option>
+                <option value="50000">3GB - 50.000 LBP</option>
+            </select>
+            <input type="text" placeholder="Mobile Number" id="mobile-internet-touch" required>
+            <button onclick="sendWhatsApp1('internet-touch', 'mobile-internet-touch', 'Internet Touch')">Recharge</button>
+        </div>
+    </div>
+
+    <div id="bills" class="section" style="display: none;">
+        <h2>Bills Options</h2>
+        <h3>Electricity</h3>
+        <input type="text" placeholder="Bill Number" id="bill-electricity">
+        <button onclick="sendWhatsApp('Electricity Bill', 0, document.getElementById('bill-electricity').value)">Pay Bill</button>
+    </div>
+
+    <div id="vouchers" class="section" style="display: none;">
+        <h2>Vouchers Options</h2>
+        <input type="text" placeholder="Voucher Code" id="voucher-code">
+        <button onclick="sendWhatsApp('Voucher', 0, document.getElementById('voucher-code').value)">Redeem Voucher</button>
+    </div>
+
     <script>
         const users = [
             { username: 'admin', password: '12345', walletBalance: 1000000 },
@@ -150,20 +226,22 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
+            console.log(`Attempting login with username: ${username} and password: ${password}`);
             const user = users.find(u => u.username === username && u.password === password);
             
             if (user) {
                 document.getElementById('wallet-balance').innerText = user.walletBalance;
                 showWallet();
             } else {
-                alert('Login failed: Invalid credentials');
+                alert('Login failed: Invalid credentials. Please check your username and password.');
             }
         }
 
         function showWallet() {
+            console.log("Showing wallet...");
             document.getElementById('login').style.display = 'none';
             document.getElementById('wallet').style.display = 'block';
-            document.getElementById('mainMenu').style.display = 'flex'; // Show main menu after login
+            document.getElementById('mainMenu').style.display = 'flex'; 
         }
 
         function showSection(sectionId) {
